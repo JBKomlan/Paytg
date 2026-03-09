@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Paiement Automatique</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; max-width: 500px; margin: 20px auto; padding: 20px; background: #eef2f3; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; }
+        label { display: block; margin-top: 15px; font-weight: bold; color: #555; }
+        input, select, button { width: 100%; padding: 12px; margin-top: 5px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+        button { background: #25D366; color: white; border: none; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        button:hover { background: #128C7E; }
+        #result { display: none; margin-top: 20px; padding: 15px; background: #f0fff4; border: 1px solid #25D366; border-radius: 10px; text-align: center; }
+        .wa-link { display: inline-block; background: #075E54; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>🚀 Dashboard Agent</h2>
+    
+    <label>📞 WhatsApp du Client (ex: 228...)</label>
+    <input type="number" id="numClient" placeholder="22890000000">
+
+    <label>👤 Numéro qui reçoit l'argent</label>
+    <input type="number" id="numBenef" placeholder="90112233">
+
+    <label>💰 Montant (FCFA)</label>
+    <input type="number" id="montant" placeholder="5000">
+
+    <label>🌐 Réseau</label>
+    <select id="reseau">
+        <option value="mixx">Moov (Mixx)</option>
+        <option value="flooz">Moov (Flooz)</option>
+    </select>
+
+    <button onclick="genererLien()">Générer le lien WhatsApp</button>
+
+    <div id="result">
+        <p style="color: #2e7d32; font-weight: bold;">Lien prêt !</p>
+        <div id="waArea"></div>
+    </div>
+</div>
+
+<script>
+    function genererLien() {
+        const client = document.getElementById('numClient').value.trim();
+        const benef = document.getElementById('numBenef').value.trim();
+        const mt = document.getElementById('montant').value.trim();
+        const res = document.getElementById('reseau').value;
+
+        if(!client || !benef || !mt) {
+            alert("Merci de remplir tous les champs.");
+            return;
+        }
+
+        // --- CONFIGURATION : REMPLACE TON_PSEUDO CI-DESSOUS ---
+        const pseudoGithub = "TON_PSEUDO"; 
+        const nomProjet = "pay"; // Le nom de ton dépôt GitHub
+        const baseUrl = `https://${pseudoGithub}.github.io/${nomProjet}/payer.html`;
+        
+        // Construction de l'URL avec les paramètres
+        const lienPaiement = `${baseUrl}?mt=${mt}&num=${benef}&res=${res}`;
+        
+        // Message WhatsApp
+        const message = `Bonjour, pour valider votre paiement de ${mt} FCFA, merci de cliquer sur ce lien sécurisé : ${lienPaiement}`;
+        const waURL = `https://wa.me/${client}?text=${encodeURIComponent(message)}`;
+
+        document.getElementById('waArea').innerHTML = `
+            <a href="${waURL}" target="_blank" class="wa-link">📲 Envoyer via WhatsApp</a>
+        `;
+        document.getElementById('result').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
